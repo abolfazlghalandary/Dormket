@@ -5,10 +5,17 @@ import { createTheme } from "@mui/material/styles";
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import { ReactComponent as Bed } from './assets/landing images/SVG/Bed.svg';
+import './index.css';
+
 
 function App() {
-  // define theme
   const theme = createTheme({
+    typography: {
+      fontFamily: [
+        '"Vazir"',
+      ].join(','),
+    },
     palette: {
       primary: {
         light: "#0042AD",
@@ -30,13 +37,10 @@ function App() {
       <CssBaseline />
       <ResponsiveAppBar />
       <Box
-        height="100vh"
         display="flex"
         justifyContent="center"
-        alignItems="center"
-        flexDirection="column"
-      >
-        <Container fluid>
+        alignItems="center">
+        <Container>
           <Col>
             <Row>
               <Typography color="#020A9F" variant="h1">
@@ -58,7 +62,68 @@ function App() {
             </Row>
           </Col>
         </Container>
+        <Container>
+          <Bed style={{ width: "50em" }} />
+        </Container>
       </Box>
+
+      <Container>
+        <Row>
+          <Col>
+            <Paper
+              sx={{ padding: "1rem", backgroundColor: "#FD4077" }}>
+              <Typography color="#ffffff" variant="h6">
+                +500 کاربر فعال
+              </Typography>
+            </Paper>
+          </Col>
+          <Col>
+            <Paper
+              sx={{ padding: "1rem", backgroundColor: "#FD4077" }}>
+              <Typography color="#ffffff" variant="h6">
+                +15000 ثبت سفارش
+              </Typography>
+            </Paper>
+          </Col>
+          <Col>
+            <Paper
+              sx={{ padding: "1rem", backgroundColor: "#FD4077" }}>
+              <Typography color="#ffffff" variant="h6">
+                +17 میلیون تومان گردش مالی
+              </Typography>
+            </Paper>
+          </Col>
+        </Row>
+      </Container>
+
+      <Container>
+        <Row>
+          <Col>
+            <Paper
+              sx={{ padding: "1rem", backgroundColor: "#FD4077" }}>
+              <Typography color="#ffffff" variant="h6">
+                +500 کاربر فعال
+              </Typography>
+            </Paper>
+          </Col>
+          <Col>
+            <Paper
+              sx={{ padding: "1rem", backgroundColor: "#FD4077" }}>
+              <Typography color="#ffffff" variant="h6">
+                +15000 ثبت سفارش
+              </Typography>
+            </Paper>
+          </Col>
+          <Col>
+            <Paper
+              sx={{ padding: "1rem", backgroundColor: "#FD4077" }}>
+              <Typography color="#ffffff" variant="h6">
+                +17 میلیون تومان گردش مالی
+              </Typography>
+            </Paper>
+          </Col>
+        </Row>
+      </Container>
     </ThemeProvider>
   );
 }

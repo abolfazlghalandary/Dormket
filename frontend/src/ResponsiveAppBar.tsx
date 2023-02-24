@@ -16,7 +16,7 @@ import { ReactComponent as Logo } from './assets/logo/SVG/logo.svg';
 
 
 const pages = ['خرید و فروش', 'ثبت‌نام', 'ورود'];
-const settings = ['پروفایل', 'ورود', 'ثبت نام', 'خروج از حساب'];
+const settings = ['حساب', 'ورود', 'ثبت نام', 'خروج از حساب'];
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -110,9 +110,9 @@ function ResponsiveAppBar() {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
+            <Tooltip title="پروفایل">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar sx={{ bgcolor: '#B82C00' }}>پر</Avatar>
               </IconButton>
             </Tooltip>
             <Menu

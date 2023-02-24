@@ -40,7 +40,7 @@ function App() {
         display="flex"
         justifyContent="center"
         alignItems="center">
-        <Container>
+        <Box sx={{ m: 4 }}>
           <Col>
             <Row>
               <Typography color="#020A9F" variant="h1">
@@ -61,10 +61,8 @@ function App() {
               </Typography>
             </Row>
           </Col>
-        </Container>
-        <Container>
-          <Bed style={{ width: "50em" }} />
-        </Container>
+        </Box>
+        <Bed style={{ width: "80em" }} />
       </Box>
 
       <Container>

@@ -1,11 +1,8 @@
 import React from "react";
-import { Box, CssBaseline, Paper, Typography, ThemeProvider, Button } from "@mui/material";
+import { CssBaseline, ThemeProvider } from "@mui/material";
 import ResponsiveAppBar from "./ResponsiveAppBar";
 import { createTheme } from "@mui/material/styles";
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import Main from './Main';
-import { ReactComponent as Bed } from './assets/landing images/SVG/Bed.svg';
 import './index.css';
 
 

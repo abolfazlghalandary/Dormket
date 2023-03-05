@@ -2,7 +2,6 @@ import React from "react";
 import { Box, CssBaseline, Paper, Typography, ThemeProvider, Button } from "@mui/material";
 import ResponsiveAppBar from "./ResponsiveAppBar";
 import { createTheme } from "@mui/material/styles";
-import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { ReactComponent as Bed } from './assets/landing images/SVG/Bed.svg';
@@ -80,7 +79,7 @@ function App() {
         <Box sx={{ m: 4 }}>
           <Paper
             sx={{ padding: "1rem", backgroundColor: "#FD4077", width: "20vw", height: "15vw", m: 4 }}>
-            <Typography color="#ffffff" variant="h6">
+            <Typography color="#ffffff" variant="h6" align="center">
               +500
               <br />
               کاربر فعال
@@ -90,17 +89,17 @@ function App() {
         <Box sx={{ m: 4 }}>
           <Paper
             sx={{ padding: "1rem", backgroundColor: "#FD4077", width: "20vw", height: "15vw", m: 4 }}>
-            <Typography color="#ffffff" variant="h6">
+            <Typography color="#ffffff" variant="h6" align="center">
               +15000
               <br />
               ثبت سفارش
             </Typography>
           </Paper>
         </Box>
-        <Box sx={{ m: 4 }}>
+        <Box sx={{ m: 4 }} >
           <Paper
             sx={{ padding: "1rem", backgroundColor: "#FD4077", width: "20vw", height: "15vw", m: 4 }}>
-            <Typography color="#ffffff" variant="h6">
+            <Typography color="#ffffff" variant="h6" align="center">
               +17
               <br />
               میلیون تومان گردش مالی

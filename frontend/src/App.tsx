@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, CssBaseline, Paper, Typography, ThemeProvider } from "@mui/material";
+import { Box, CssBaseline, Paper, Typography, ThemeProvider, Button } from "@mui/material";
 import ResponsiveAppBar from "./ResponsiveAppBar";
 import { createTheme } from "@mui/material/styles";
 import Container from 'react-bootstrap/Container';
@@ -65,63 +65,50 @@ function App() {
         <Bed style={{ width: "80em" }} />
       </Box>
 
-      <Container>
-        <Row>
-          <Col>
-            <Paper
-              sx={{ padding: "1rem", backgroundColor: "#FD4077" }}>
-              <Typography color="#ffffff" variant="h6">
-                +500 کاربر فعال
-              </Typography>
-            </Paper>
-          </Col>
-          <Col>
-            <Paper
-              sx={{ padding: "1rem", backgroundColor: "#FD4077" }}>
-              <Typography color="#ffffff" variant="h6">
-                +15000 ثبت سفارش
-              </Typography>
-            </Paper>
-          </Col>
-          <Col>
-            <Paper
-              sx={{ padding: "1rem", backgroundColor: "#FD4077" }}>
-              <Typography color="#ffffff" variant="h6">
-                +17 میلیون تومان گردش مالی
-              </Typography>
-            </Paper>
-          </Col>
-        </Row>
-      </Container>
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center">
+        <Button variant="contained" sx={{ padding: "1rem", color: "#FFFFFF" }}>شروع خرید و فروش</Button>
+        <Button variant="outlined" sx={{ padding: "1rem", m: 2}}>ثبت نام</Button>
+      </Box>
 
-      <Container>
-        <Row>
-          <Col>
-            <Paper
-              sx={{ padding: "1rem", backgroundColor: "#FD4077" }}>
-              <Typography color="#ffffff" variant="h6">
-                +500 کاربر فعال
-              </Typography>
-            </Paper>
-          </Col>
-          <Col>
-            <Paper
-              sx={{ padding: "1rem", backgroundColor: "#FD4077" }}>
-              <Typography color="#ffffff" variant="h6">
-                +15000 ثبت سفارش
-              </Typography>
-            </Paper>
-          </Col>
-          <Col>
-            <Paper
-              sx={{ padding: "1rem", backgroundColor: "#FD4077" }}>
-              <Typography color="#ffffff" variant="h6">
-                +17 میلیون تومان گردش مالی
-              </Typography>
-            </Paper>
-          </Col>
-        </Row>
-      </Container>
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center">
+        <Box sx={{ m: 4 }}>
+          <Paper
+            sx={{ padding: "1rem", backgroundColor: "#FD4077", width: "20vw", height: "15vw", m: 4 }}>
+            <Typography color="#ffffff" variant="h6">
+              +500
+              <br />
+              کاربر فعال
+            </Typography>
+          </Paper>
+        </Box>
+        <Box sx={{ m: 4 }}>
+          <Paper
+            sx={{ padding: "1rem", backgroundColor: "#FD4077", width: "20vw", height: "15vw", m: 4 }}>
+            <Typography color="#ffffff" variant="h6">
+              +15000
+              <br />
+              ثبت سفارش
+            </Typography>
+          </Paper>
+        </Box>
+        <Box sx={{ m: 4 }}>
+          <Paper
+            sx={{ padding: "1rem", backgroundColor: "#FD4077", width: "20vw", height: "15vw", m: 4 }}>
+            <Typography color="#ffffff" variant="h6">
+              +17
+              <br />
+              میلیون تومان گردش مالی
+            </Typography>
+          </Paper>
+        </Box>
+      </Box>
+
     </ThemeProvider>
   );
 }

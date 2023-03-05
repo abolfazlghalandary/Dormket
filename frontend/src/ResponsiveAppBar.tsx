@@ -41,7 +41,7 @@ function ResponsiveAppBar() {
     <AppBar style={{ background: '#ffffff' }} position="sticky">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Logo style={{ width: "25vh" }} />
+          <Logo style={{ width: "25vh", padding: "0.5em" }} />
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"

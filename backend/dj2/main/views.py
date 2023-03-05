@@ -4,9 +4,9 @@ from rest_framework.views import APIView
 
 from main.Serializers.Serializers import PurchaseSerializer, SaleSerializer, ForgottenCodeSerializer
 from main.models import Purchase, Sale, ForgottenCode
-from main.logic.auth import NewUserForm
 
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.models import User
 
 import datetime
 
@@ -107,7 +107,7 @@ class EntityView:
             return Response('invalid token', status=status.HTTP_401_UNAUTHORIZED)
 
         entities_id = request.query_params['id']
-        client = request.query_params['client']
+        client = request.query_params['client']  # todo check user
 
         entities = self.get_objects().filter(id=entities_id)
         if len(entities) == 0:
@@ -163,9 +163,6 @@ class ForgottenCodeView(APIView):
         return self.entityView.put(request)
 
 
-from django.contrib.auth.models import User
-
-
 class Register(APIView):
     def post(self, request):
         if request.data['password1'] != request.data['password2']:
@@ -173,6 +170,22 @@ class Register(APIView):
         user = User.objects.create_user(request.data['username'], request.data['email'], request.data['password1'])
         user.save()
         return Response('success', status=status.HTTP_200_OK)
+
+
+class Login(APIView):
+    def post(self, request):
+        user = authenticate(username=request.data['username'], password=request.data['password'])
+        if user is not None:
+            login(request, user)
+            return Response('success', status=status.HTTP_200_OK)
+        else:
+            return Response('failed', status=status.HTTP_400_BAD_REQUEST)
+
+
+class Logout(APIView):
+    def get(self, request):
+        logout(request)
+        return Response('ss', status=status.HTTP_200_OK)
 
 
 class TestAPi(APIView):

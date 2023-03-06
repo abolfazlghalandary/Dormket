@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -7,6 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -59,6 +60,42 @@ function SellOrder(props) {
 }
 
 export default function OrderBook() {
+    // const [orders, setOrders] = useState({})
+
+    // const allOrders = async (e) => {
+    //     e.preventDefault()
+    //     const options = {
+    //         url: 'localhost:8000/api/search',
+    //         method: 'POST',
+    //         headers: {
+    //             Accept: 'application/json',
+    //             'Content-Type': 'application/json;charset=UTF-8',
+    //         },
+    //         data,
+    //     }
+
+    //     axios(options)
+    //         .then((response) => {
+    //             console.log(response.data.data) // THIS RETURNS OBJECT DATA GOTTEN FROM THE SERVER AFTER POST REQUEST
+
+    //             setOffers(response.data.data) //IT DOES NOT UPDATE WITH RESPONSE DATA
+    //             console.log(offers)
+    //         })
+    //         .catch(function (error) {
+    //             if (error.response) {
+    //                 setValerr(error.response.data.errors)
+    //                 console.log(error.response)
+    //             }
+    //         })
+    // }
+
+    // useEffect(() => {
+    //     // This should log offers to the console if it has been set
+    //     if (offers) {
+    //         console.log(offers)
+    //     }
+    // }, [offers])
+
     return (
         <TableContainer component={Paper}>
             <Table sx={{ minWidth: 700 }} aria-label="customized table">

@@ -1,17 +1,13 @@
 import React from "react";
 import { Box, Grid, Button, TextField, FormControl, InputLabel, Input, Rating, Typography } from "@mui/material";
 import './index.css';
-import Avatar from '@mui/material/Avatar';
+import Income from './Income';
 import { ReactComponent as ProfileIcon } from './assets/profile/profile.svg';
 
 
 function Profile() {
     return (
         <>
-            {/* <Grid container
-                spacing={0}
-                alignItems="center"
-                justifyContent="center"> */}
             <Box
                 display="flex"
                 justifyContent="center"
@@ -35,7 +31,7 @@ function Profile() {
                     />
                 </Box>
             </Box>
-            {/* </Grid > */}
+            <Income />
         </>
     );
 }

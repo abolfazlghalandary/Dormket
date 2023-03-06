@@ -354,8 +354,11 @@ class Logout(APIView):
 
 class Credit(APIView):
     def put(self, request):
-        current_user_db = User.objects.get(id=request.user.id)
-        current_user_db.dormketuser.credit += request.query_params['value']
+        if not check_token(request):
+            return Response('invalid token', status=status.HTTP_401_UNAUTHORIZED)
+        user_id = request.user.id
+        current_user_db = User.objects.get(id=user_id)
+        current_user_db.dormketuser.credit += int(request.query_params['value'])
         current_user_db.dormketuser.save()
         return Response('success', status=status.HTTP_200_OK)
 

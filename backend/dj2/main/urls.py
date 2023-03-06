@@ -11,6 +11,6 @@ urlpatterns = [
     path("register", views.Register.as_view(), name="register"),
     path("login", views.Login.as_view(), name="login"),
     path("logout", views.Logout.as_view(), name="logout"),
-    path("Credit", views.Credit.as_view(), name="Credit"),
+    path("addCredit", views.Credit.as_view(), name="Credit"),
     path("DailyIncome", views.DailyIncome.as_view(), name="DailyIncome"),
 ]

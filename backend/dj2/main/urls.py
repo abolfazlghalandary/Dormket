@@ -6,7 +6,6 @@ urlpatterns = [
     path('score', views.add_score, name='score'),
     path('purchase', views.PurchaseView.as_view(), name='purchase'),
     path('sale', views.SaleView.as_view(), name='sale'),
-    path('forgottonCode', views.ForgottenCodeView.as_view(), name='forgotten code'),
     path('codeSale', views.ForgottenCodeForSaleView.as_view(), name='code1'),
     path('codePurchase', views.ForgottenCodeForPurchaseView.as_view(), name='code2'),
     path("register", views.Register.as_view(), name="register"),

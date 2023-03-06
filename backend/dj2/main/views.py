@@ -30,11 +30,11 @@ def get_score(request):
 
 @api_view(['POST'])
 def add_score(request):
-    # if not check_token(request):
-    #     return Response('invalid token', status=status.HTTP_401_UNAUTHORIZED)
+    if not check_token(request):
+        return Response('invalid token', status=status.HTTP_401_UNAUTHORIZED)
 
     score_receiver_user_id = request.query_params['userId']
-    user_id = 2  # User.objects.get(id=request.user.id).dormketuser.id
+    user_id = User.objects.get(id=request.user.id).dormketuser.id
     value = request.query_params['score']
 
     if not (value.isdigit() and 5 >= int(value) >= 1):
@@ -182,19 +182,6 @@ class SaleView(APIView):
         return self.entityView.put(request)
 
 
-class ForgottenCodeView(APIView):
-    entityView = EntityView("forgotten code")
-
-    def get(self, request):
-        return self.entityView.get(request)
-
-    def post(self, request):
-        return self.entityView.post(request)
-
-    def put(self, request):
-        return self.entityView.put(request)
-
-
 from django.db.models import Count
 
 
@@ -206,10 +193,9 @@ class ForgottenCodeForSaleView(APIView):
         return Response(prices, status.HTTP_200_OK)
 
     def post(self, request):
-        # if not check_token(request):
-        #     return Response('invalid token', status=status.HTTP_401_UNAUTHORIZED)
-        # user_id = request.user.id
-        user_id = 9
+        if not check_token(request):
+            return Response('invalid token', status=status.HTTP_401_UNAUTHORIZED)
+        user_id = request.user.id
         code = request.data['code']
         price = request.data['price']
         created_time = timezone.now()  # datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
@@ -241,10 +227,8 @@ class ForgottenCodeForSaleView(APIView):
                                                code=code,
                                                price=price)
                 dormket_user.credit += price
-                # matched_code.dormketUser.credit -= price
 
                 dormket_user.save()
-                # matched_code.dormketUser.save()
                 forgotten_code.save()
                 matched_code.delete()
                 transaction.savepoint_commit(sid)
@@ -262,10 +246,9 @@ class ForgottenCodeForPurchaseView(APIView):
         return Response(prices, status.HTTP_200_OK)
 
     def post(self, request):
-        # if not check_token(request):
-        #     return Response('invalid token', status=status.HTTP_401_UNAUTHORIZED)
-        # user_id = request.user.id
-        user_id = 7
+        if not check_token(request):
+            return Response('invalid token', status=status.HTTP_401_UNAUTHORIZED)
+        user_id = request.user.id
         price = request.data['price']
         created_time = timezone.now()
 
@@ -321,10 +304,9 @@ class ForgottenCodeForPurchaseView(APIView):
 
 class ForgottenCodeController:
     def post(self, request):
-        # if not check_token(request):
-        #     return Response('invalid token', status=status.HTTP_401_UNAUTHORIZED)
-        # user_id = request.user.id
-        user_id = 7
+        if not check_token(request):
+            return Response('invalid token', status=status.HTTP_401_UNAUTHORIZED)
+        user_id = request.user.id
         price = request.data['price']
         created_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
 

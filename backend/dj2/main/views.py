@@ -3,17 +3,17 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from main.Serializers.Serializers import PurchaseSerializer, SaleSerializer, ForgottenCodeSerializer
-from main.models import Purchase, Sale, ForgottenCode, DormketUser, Score
+from main.models import Purchase, Sale, ForgottenCode, DormketUser, Score, ForgottenCodeForSale, \
+    ForgottenCodeForPurchase
 
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 from django.db import transaction
 from django.db.models import Avg
 
-
 import datetime
-
 
 from django.utils.timezone import make_aware
 from rest_framework.decorators import api_view
@@ -187,6 +187,109 @@ class ForgottenCodeView(APIView):
         return self.entityView.put(request)
 
 
+class ForgottenCodeForSaleView(APIView):
+    def post(self, request):
+        # if not check_token(request):
+        #     return Response('invalid token', status=status.HTTP_401_UNAUTHORIZED)
+        # user_id = request.user.id
+        user_id = 9
+        code = request.data['code']
+        price = request.data['price']
+        created_time = timezone.now()  # datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+
+        try:
+            dormket_user = DormketUser.objects.get(user_id=user_id)
+        except Exception as e:
+            return Response(e.__str__(), status=status.HTTP_400_BAD_REQUEST)
+
+        matched_purchase_codes = ForgottenCodeForPurchase.objects.filter(price=price).order_by('createdTime')
+
+        if matched_purchase_codes.count() == 0:
+            ForgottenCodeForSale(dormketUser=dormket_user,
+                                 code=code,
+                                 price=price,
+                                 createdTime=created_time).save()
+            return Response('order successfully registered', status.HTTP_200_OK)
+        else:
+            sid = transaction.savepoint()
+            try:
+                matched_code = matched_purchase_codes.first()
+                forgotten_code = ForgottenCode(buyer_id=matched_code.dormketUser_id,
+                                               seller_id=dormket_user.id,
+                                               createdTime=matched_code.createdTime,
+                                               closedTime=created_time,
+                                               code=code,
+                                               price=price)
+                forgotten_code.save()
+                matched_code.delete()
+                transaction.savepoint_commit(sid)
+                return Response(matched_code.id, status.HTTP_200_OK)
+
+            except Exception as e:
+                transaction.savepoint_rollback(sid)
+                return Response(e.__str__(), status=status.HTTP_400_BAD_REQUEST)
+
+
+class ForgottenCodeForPurchaseView(APIView):
+    def post(self, request):
+        # if not check_token(request):
+        #     return Response('invalid token', status=status.HTTP_401_UNAUTHORIZED)
+        # user_id = request.user.id
+        user_id = 7
+        price = request.data['price']
+        created_time = timezone.now()  # datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+
+        try:
+            dormket_user = DormketUser.objects.get(user_id=user_id)
+        except Exception as e:
+            return Response(e.__str__(), status=status.HTTP_400_BAD_REQUEST)
+
+        matched_selling_codes = ForgottenCodeForSale.objects.filter(price=price).order_by('createdTime')
+
+        if matched_selling_codes.count() == 0:
+            ForgottenCodeForPurchase(dormketUser=dormket_user,
+                                     price=price,
+                                     createdTime=created_time).save()
+            return Response('order successfully registered', status.HTTP_200_OK)
+        else:
+            sid = transaction.savepoint()
+            try:
+                matched_selling_code = matched_selling_codes.first()
+                forgotten_code = ForgottenCode(buyer_id=dormket_user.id,
+                                               seller_id=matched_selling_code.dormketUser_id,
+                                               createdTime=matched_selling_code.createdTime,
+                                               closedTime=created_time,
+                                               code=matched_selling_code.code,
+                                               price=price)
+
+                forgotten_code.save()
+                matched_selling_code.delete()
+                transaction.savepoint_commit(sid)
+                return Response(matched_selling_code.id, status.HTTP_200_OK)
+
+            except Exception as e:
+                transaction.savepoint_rollback(sid)
+                return Response(e.__str__(), status=status.HTTP_400_BAD_REQUEST)
+
+
+class ForgottenCodeController:
+    def post(self, request):
+        # if not check_token(request):
+        #     return Response('invalid token', status=status.HTTP_401_UNAUTHORIZED)
+        # user_id = request.user.id
+        user_id = 7
+        price = request.data['price']
+        created_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+
+        try:
+            dormket_user = DormketUser.objects.get(user_id=user_id)
+        except Exception as e:
+            return Response(e.__str__(), status=status.HTTP_400_BAD_REQUEST)
+
+        ForgottenCodeForPurchase(dormketUser=dormket_user, price=price, createdTime=created_time).save()
+        return Response('success', status.HTTP_200_OK)
+
+
 class Register(APIView):
     def post(self, request):
         if request.data['password1'] != request.data['password2']:
@@ -213,8 +316,6 @@ class Logout(APIView):
     def get(self, request):
         logout(request)
         return Response('ss', status=status.HTTP_200_OK)
-
-
 
 
 class TestAPi(APIView):

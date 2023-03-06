@@ -14,8 +14,6 @@ from django.db import transaction
 from django.db.models import Avg
 
 import datetime
-
-from django.utils.timezone import make_aware
 from rest_framework.decorators import api_view
 
 
@@ -193,7 +191,7 @@ from django.db.models import Count
 # todo code should be uniqe
 class ForgottenCodeForSaleView(APIView):
     def get(self, request):
-        prices = ForgottenCodeForSale.objects.values('price')\
+        prices = ForgottenCodeForSale.objects.values('price') \
                      .annotate(total_count=Count('id')).order_by('price')[:5]
         return Response(prices, status.HTTP_200_OK)
 
@@ -249,7 +247,7 @@ class ForgottenCodeForSaleView(APIView):
 
 class ForgottenCodeForPurchaseView(APIView):
     def get(self, request):
-        prices = ForgottenCodeForPurchase.objects.values('price')\
+        prices = ForgottenCodeForPurchase.objects.values('price') \
                      .annotate(total_count=Count('id')).order_by('price')[:5]
         return Response(prices, status.HTTP_200_OK)
 
@@ -354,7 +352,15 @@ class Login(APIView):
 class Logout(APIView):
     def get(self, request):
         logout(request)
-        return Response('ss', status=status.HTTP_200_OK)
+        return Response('success', status=status.HTTP_200_OK)
+
+
+class Credit(APIView):
+    def put(self, request):
+        current_user_db = User.objects.get(id=request.user.id)
+        current_user_db.dormketuser.credit += request.query_params['value']
+        current_user_db.dormketuser.save()
+        return Response('success', status=status.HTTP_200_OK)
 
 
 class TestAPi(APIView):

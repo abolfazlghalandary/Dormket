@@ -186,7 +186,7 @@ class ForgottenCodeView(APIView):
     def put(self, request):
         return self.entityView.put(request)
 
-
+#todo code should be uniqe
 class ForgottenCodeForSaleView(APIView):
     def post(self, request):
         # if not check_token(request):
@@ -205,11 +205,14 @@ class ForgottenCodeForSaleView(APIView):
         matched_purchase_codes = ForgottenCodeForPurchase.objects.filter(price=price).order_by('createdTime')
 
         if matched_purchase_codes.count() == 0:
-            ForgottenCodeForSale(dormketUser=dormket_user,
-                                 code=code,
-                                 price=price,
-                                 createdTime=created_time).save()
-            return Response('order successfully registered', status.HTTP_200_OK)
+            try:
+                ForgottenCodeForSale(dormketUser=dormket_user,
+                                     code=code,
+                                     price=price,
+                                     createdTime=created_time).save()
+                return Response('order successfully registered', status.HTTP_200_OK)
+            except Exception as e:
+                return Response(e.__str__(), status=status.HTTP_400_BAD_REQUEST)
         else:
             sid = transaction.savepoint()
             try:
@@ -220,6 +223,11 @@ class ForgottenCodeForSaleView(APIView):
                                                closedTime=created_time,
                                                code=code,
                                                price=price)
+                dormket_user.credit += price
+                # matched_code.dormketUser.credit -= price
+
+                dormket_user.save()
+                # matched_code.dormketUser.save()
                 forgotten_code.save()
                 matched_code.delete()
                 transaction.savepoint_commit(sid)
@@ -237,20 +245,33 @@ class ForgottenCodeForPurchaseView(APIView):
         # user_id = request.user.id
         user_id = 7
         price = request.data['price']
-        created_time = timezone.now()  # datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+        created_time = timezone.now()
 
         try:
             dormket_user = DormketUser.objects.get(user_id=user_id)
         except Exception as e:
             return Response(e.__str__(), status=status.HTTP_400_BAD_REQUEST)
 
+        if dormket_user.credit < price:
+            return Response('not enough credit', status.HTTP_400_BAD_REQUEST)
+
         matched_selling_codes = ForgottenCodeForSale.objects.filter(price=price).order_by('createdTime')
 
         if matched_selling_codes.count() == 0:
-            ForgottenCodeForPurchase(dormketUser=dormket_user,
-                                     price=price,
-                                     createdTime=created_time).save()
-            return Response('order successfully registered', status.HTTP_200_OK)
+            sid = transaction.savepoint()
+            try:
+                ForgottenCodeForPurchase(dormketUser=dormket_user,
+                                         price=price,
+                                         createdTime=created_time).save()
+                dormket_user.credit -= price
+                dormket_user.save()
+                transaction.savepoint_commit(sid)
+                return Response('order successfully registered', status.HTTP_200_OK)
+
+            except Exception as e:
+                transaction.savepoint_rollback(sid)
+                return Response(e.__str__(), status=status.HTTP_400_BAD_REQUEST)
+
         else:
             sid = transaction.savepoint()
             try:
@@ -261,7 +282,11 @@ class ForgottenCodeForPurchaseView(APIView):
                                                closedTime=created_time,
                                                code=matched_selling_code.code,
                                                price=price)
+                dormket_user.credit -= price
+                matched_selling_code.dormketUser.credit += price
 
+                dormket_user.save()
+                matched_selling_code.dormketUser.save()
                 forgotten_code.save()
                 matched_selling_code.delete()
                 transaction.savepoint_commit(sid)

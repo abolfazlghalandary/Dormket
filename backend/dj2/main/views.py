@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 
 from django.db import transaction
-from django.db.models import Avg
+from django.db.models import Avg, Sum
 
 import datetime
 from rest_framework.decorators import api_view
@@ -30,21 +30,31 @@ def get_score(request):
 
 @api_view(['POST'])
 def add_score(request):
-    if not check_token(request):
-        return Response('invalid token', status=status.HTTP_401_UNAUTHORIZED)
+    # if not check_token(request):
+    #     return Response('invalid token', status=status.HTTP_401_UNAUTHORIZED)
 
     score_receiver_user_id = request.query_params['userId']
-    user_id = request.user.id
-    score = request.query_params['score']
+    user_id = 2  # User.objects.get(id=request.user.id).dormketuser.id
+    value = request.query_params['score']
+
+    if not (value.isdigit() and 5 >= int(value) >= 1):
+        return Response('invalid score', status=status.HTTP_400_BAD_REQUEST)
 
     try:
         user = User.objects.get(id=score_receiver_user_id)
         if user is None:
             return Response('invalid user id', status=status.HTTP_400_BAD_REQUEST)
 
-        sc = Score(scoreReceiverId=score_receiver_user_id, user_id=user_id, value=score)
-        sc.save()
-        return Response('success', status=status.HTTP_200_OK)
+        scores = Score.objects.filter(scoreReceiverId=score_receiver_user_id, userId=user_id)
+        if scores.count() == 0:
+            score = Score(scoreReceiverId=score_receiver_user_id, userId=user_id, value=value)
+            score.save()
+            return Response('success', status=status.HTTP_200_OK)
+        else:
+            score = scores.first()
+            score.value = value
+            score.save()
+            return Response('success', status=status.HTTP_200_OK)
 
     except Exception as e:
         return Response(e.__str__(), status=status.HTTP_400_BAD_REQUEST)
@@ -361,6 +371,60 @@ class Credit(APIView):
         current_user_db.dormketuser.credit += request.query_params['value']
         current_user_db.dormketuser.save()
         return Response('success', status=status.HTTP_200_OK)
+
+
+class DailyIncome(APIView):
+    def get(self, request):
+        user_id = 7  # request.user.id
+        current_user_db = User.objects.get(id=user_id)
+        dormket_user_id = current_user_db.dormketuser.id
+
+        year = request.query_params['year']
+        month = request.query_params['month']
+        day = request.query_params['day']
+
+        p1 = ForgottenCode.objects \
+            .filter(closedTime__year=year, closedTime__month=month, closedTime__day=day) \
+            .filter(buyer_id=dormket_user_id).aggregate(Sum('price'))
+
+        p2 = ForgottenCode.objects \
+            .filter(closedTime__year=year, closedTime__month=month, closedTime__day=day) \
+            .filter(seller_id=dormket_user_id).aggregate(Sum('price'))
+
+        p2 = p2['price__sum'] if p2['price__sum'] is not None else 0
+        p1 = p1['price__sum'] if p1['price__sum'] is not None else 0
+
+        pp1 = p2 - p1
+
+        p3 = Purchase.objects \
+            .filter(closedTime__year=year, closedTime__month=month, closedTime__day=day) \
+            .filter(ownerUserId=dormket_user_id).aggregate(Sum('price'))
+
+        p4 = Sale.objects \
+            .filter(closedTime__year=year, closedTime__month=month, closedTime__day=day) \
+            .filter(ownerUserId=dormket_user_id).aggregate(Sum('price'))
+
+        p3 = p3['price__sum'] if p3['price__sum'] is not None else 0
+        p4 = p4['price__sum'] if p4['price__sum'] is not None else 0
+
+        pp2 = p4 - p3
+
+        p6 = Purchase.objects \
+            .filter(closedTime__year=year, closedTime__month=month, closedTime__day=day) \
+            .filter(clientUserId=dormket_user_id).aggregate(Sum('price'))
+
+        p5 = Sale.objects \
+            .filter(closedTime__year=year, closedTime__month=month, closedTime__day=day) \
+            .filter(clientUserId=dormket_user_id).aggregate(Sum('price'))
+
+        p6 = p6['price__sum'] if p6['price__sum'] is not None else 0
+        p5 = p5['price__sum'] if p5['price__sum'] is not None else 0
+
+        pp3 = p6 - p5
+
+        p = pp1 + pp2 + pp3
+        print(p)
+        return Response(p, status=status.HTTP_200_OK)
 
 
 class TestAPi(APIView):

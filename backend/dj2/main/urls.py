@@ -2,7 +2,8 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('score', views.get_score, name='first_api'),
+    path('getScore', views.get_score, name='get score'),
+    path('score', views.add_score, name='score'),
     path('purchase', views.PurchaseView.as_view(), name='purchase'),
     path('sale', views.SaleView.as_view(), name='sale'),
     path('forgottonCode', views.ForgottenCodeView.as_view(), name='forgotten code'),
@@ -11,5 +12,7 @@ urlpatterns = [
     path("register", views.Register.as_view(), name="register"),
     path("login", views.Login.as_view(), name="login"),
     path("logout", views.Logout.as_view(), name="logout"),
-    path("test", views.TestAPi.as_view(), name="test")
+    path("test", views.TestAPi.as_view(), name="test"),
+    path("Credit", views.Credit.as_view(), name="Credit"),
+    path("DailyIncome", views.DailyIncome.as_view(), name="DailyIncome"),
 ]

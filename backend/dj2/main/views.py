@@ -30,11 +30,11 @@ def get_score(request):
 
 @api_view(['POST'])
 def add_score(request):
-    # if not check_token(request):
-    #     return Response('invalid token', status=status.HTTP_401_UNAUTHORIZED)
+    if not check_token(request):
+        return Response('invalid token', status=status.HTTP_401_UNAUTHORIZED)
 
     score_receiver_user_id = request.query_params['userId']
-    user_id = 2  # User.objects.get(id=request.user.id).dormketuser.id
+    user_id = User.objects.get(id=request.user.id).dormketuser.id
     value = request.query_params['score']
 
     if not (value.isdigit() and 5 >= int(value) >= 1):
@@ -182,23 +182,9 @@ class SaleView(APIView):
         return self.entityView.put(request)
 
 
-class ForgottenCodeView(APIView):
-    entityView = EntityView("forgotten code")
-
-    def get(self, request):
-        return self.entityView.get(request)
-
-    def post(self, request):
-        return self.entityView.post(request)
-
-    def put(self, request):
-        return self.entityView.put(request)
-
-
 from django.db.models import Count
 
 
-# todo code should be uniqe
 class ForgottenCodeForSaleView(APIView):
     def get(self, request):
         prices = ForgottenCodeForSale.objects.values('price') \
@@ -206,13 +192,12 @@ class ForgottenCodeForSaleView(APIView):
         return Response(prices, status.HTTP_200_OK)
 
     def post(self, request):
-        # if not check_token(request):
-        #     return Response('invalid token', status=status.HTTP_401_UNAUTHORIZED)
-        # user_id = request.user.id
-        user_id = 9
+        if not check_token(request):
+            return Response('invalid token', status=status.HTTP_401_UNAUTHORIZED)
+        user_id = request.user.id
         code = request.data['code']
         price = request.data['price']
-        created_time = timezone.now()  # datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+        created_time = timezone.now()
 
         try:
             dormket_user = DormketUser.objects.get(user_id=user_id)
@@ -223,10 +208,11 @@ class ForgottenCodeForSaleView(APIView):
 
         if matched_purchase_codes.count() == 0:
             try:
-                ForgottenCodeForSale(dormketUser=dormket_user,
+                f = ForgottenCodeForSale(dormketUser=dormket_user,
                                      code=code,
                                      price=price,
-                                     createdTime=created_time).save()
+                                     createdTime=created_time)
+                f.save()
                 return Response('order successfully registered', status.HTTP_200_OK)
             except Exception as e:
                 return Response(e.__str__(), status=status.HTTP_400_BAD_REQUEST)
@@ -241,10 +227,8 @@ class ForgottenCodeForSaleView(APIView):
                                                code=code,
                                                price=price)
                 dormket_user.credit += price
-                # matched_code.dormketUser.credit -= price
 
                 dormket_user.save()
-                # matched_code.dormketUser.save()
                 forgotten_code.save()
                 matched_code.delete()
                 transaction.savepoint_commit(sid)
@@ -262,10 +246,9 @@ class ForgottenCodeForPurchaseView(APIView):
         return Response(prices, status.HTTP_200_OK)
 
     def post(self, request):
-        # if not check_token(request):
-        #     return Response('invalid token', status=status.HTTP_401_UNAUTHORIZED)
-        # user_id = request.user.id
-        user_id = 7
+        if not check_token(request):
+            return Response('invalid token', status=status.HTTP_401_UNAUTHORIZED)
+        user_id = request.user.id
         price = request.data['price']
         created_time = timezone.now()
 
@@ -319,34 +302,38 @@ class ForgottenCodeForPurchaseView(APIView):
                 return Response(e.__str__(), status=status.HTTP_400_BAD_REQUEST)
 
 
-class ForgottenCodeController:
-    def post(self, request):
-        # if not check_token(request):
-        #     return Response('invalid token', status=status.HTTP_401_UNAUTHORIZED)
-        # user_id = request.user.id
-        user_id = 7
-        price = request.data['price']
-        created_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
-
-        try:
-            dormket_user = DormketUser.objects.get(user_id=user_id)
-        except Exception as e:
-            return Response(e.__str__(), status=status.HTTP_400_BAD_REQUEST)
-
-        ForgottenCodeForPurchase(dormketUser=dormket_user, price=price, createdTime=created_time).save()
-        return Response('success', status.HTTP_200_OK)
+# class ForgottenCodeController:
+#     def post(self, request):
+#         if not check_token(request):
+#             return Response('invalid token', status=status.HTTP_401_UNAUTHORIZED)
+#         user_id = request.user.id
+#         price = request.data['price']
+#         created_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+#
+#         try:
+#             dormket_user = DormketUser.objects.get(user_id=user_id)
+#         except Exception as e:
+#             return Response(e.__str__(), status=status.HTTP_400_BAD_REQUEST)
+#
+#         ForgottenCodeForPurchase(dormketUser=dormket_user, price=price, createdTime=created_time).save()
+#         return Response('success', status.HTTP_200_OK)
 
 
 class Register(APIView):
     def post(self, request):
         if request.data['password1'] != request.data['password2']:
             return Response('two different passwords', status=status.HTTP_400_BAD_REQUEST)
-        user = User.objects.create_user(request.data['username'], request.data['email'], request.data['password1'])
-        user.save()
 
-        DormketUser(user=user, credit=10).save()
-
-        return Response('success', status=status.HTTP_200_OK)
+        sid = transaction.savepoint()
+        try:
+            user = User.objects.create_user(request.data['username'], request.data['email'], request.data['password1'])
+            user.save()
+            DormketUser(user=user, credit=10).save()
+            transaction.savepoint_commit(sid)
+            return Response('success', status=status.HTTP_200_OK)
+        except Exception as e:
+            transaction.savepoint_rollback(sid)
+            return Response(e.__str__(), status=status.HTTP_400_BAD_REQUEST)
 
 
 class Login(APIView):
@@ -360,22 +347,25 @@ class Login(APIView):
 
 
 class Logout(APIView):
-    def get(self, request):
+    def post(self, request):
         logout(request)
         return Response('success', status=status.HTTP_200_OK)
 
 
 class Credit(APIView):
     def put(self, request):
-        current_user_db = User.objects.get(id=request.user.id)
-        current_user_db.dormketuser.credit += request.query_params['value']
+        if not check_token(request):
+            return Response('invalid token', status=status.HTTP_401_UNAUTHORIZED)
+        user_id = request.user.id
+        current_user_db = User.objects.get(id=user_id)
+        current_user_db.dormketuser.credit += int(request.query_params['value'])
         current_user_db.dormketuser.save()
         return Response('success', status=status.HTTP_200_OK)
 
 
 class DailyIncome(APIView):
     def get(self, request):
-        user_id = 7  # request.user.id
+        user_id = request.user.id
         current_user_db = User.objects.get(id=user_id)
         dormket_user_id = current_user_db.dormketuser.id
 
@@ -426,11 +416,3 @@ class DailyIncome(APIView):
         print(p)
         return Response(p, status=status.HTTP_200_OK)
 
-
-class TestAPi(APIView):
-    def get(self, request):
-        current_user = request.user
-        current_user_db = User.objects.get(id=current_user.id)
-        current_user_db.dormketuser.credit = 5
-        current_user_db.dormketuser.save()
-        return Response('success', status=status.HTTP_200_OK)

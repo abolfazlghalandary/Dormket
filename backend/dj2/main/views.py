@@ -408,11 +408,3 @@ class DailyIncome(APIView):
         print(p)
         return Response(p, status=status.HTTP_200_OK)
 
-
-class TestAPi(APIView):
-    def get(self, request):
-        current_user = request.user
-        current_user_db = User.objects.get(id=current_user.id)
-        current_user_db.dormketuser.credit = 5
-        current_user_db.dormketuser.save()
-        return Response('success', status=status.HTTP_200_OK)

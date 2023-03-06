@@ -26,11 +26,24 @@ class Sale(models.Model):
 
 
 class ForgottenCode(models.Model):
-    ownerUserId = models.CharField(max_length=30)
-    clientUserId = models.CharField(max_length=30, blank=True, null=True)
+    seller_id = models.IntegerField()
+    buyer_id = models.IntegerField()
     createdTime = models.DateTimeField()
     closedTime = models.DateTimeField(blank=True, null=True)
     code = models.CharField(max_length=6)
+    price = models.IntegerField()
+
+
+class ForgottenCodeForSale(models.Model):
+    dormketUser = models.ForeignKey(DormketUser, on_delete=models.CASCADE)
+    createdTime = models.DateTimeField()
+    code = models.CharField(max_length=6)
+    price = models.IntegerField()
+
+
+class ForgottenCodeForPurchase(models.Model):
+    dormketUser = models.ForeignKey(DormketUser, on_delete=models.CASCADE)
+    createdTime = models.DateTimeField()
     price = models.IntegerField()
 
 

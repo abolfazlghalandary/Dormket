@@ -357,7 +357,7 @@ class Credit(APIView):
 
 class DailyIncome(APIView):
     def get(self, request):
-        user_id = 7  # request.user.id
+        user_id = request.user.id
         current_user_db = User.objects.get(id=user_id)
         dormket_user_id = current_user_db.dormketuser.id
 

@@ -323,12 +323,17 @@ class Register(APIView):
     def post(self, request):
         if request.data['password1'] != request.data['password2']:
             return Response('two different passwords', status=status.HTTP_400_BAD_REQUEST)
-        user = User.objects.create_user(request.data['username'], request.data['email'], request.data['password1'])
-        user.save()
 
-        DormketUser(user=user, credit=10).save()
-
-        return Response('success', status=status.HTTP_200_OK)
+        sid = transaction.savepoint()
+        try:
+            user = User.objects.create_user(request.data['username'], request.data['email'], request.data['password1'])
+            user.save()
+            DormketUser(user=user, credit=10).save()
+            transaction.savepoint_commit(sid)
+            return Response('success', status=status.HTTP_200_OK)
+        except Exception as e:
+            transaction.savepoint_rollback(sid)
+            return Response(e.__str__(), status=status.HTTP_400_BAD_REQUEST)
 
 
 class Login(APIView):

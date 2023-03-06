@@ -5,6 +5,7 @@ import Home from './Home';
 import Trade from './Trade';
 import Register from './Register';
 import Login from './Login';
+import Profile from './Profile';
 
 const Main = () => {
   return (
@@ -13,6 +14,7 @@ const Main = () => {
       <Route path='/trade' element={<Trade />}></Route>
       <Route path='/register' element={<Register />}></Route>
       <Route path='/login' element={<Login />}></Route>
+      <Route path='/profile' element={<Profile />}></Route>
     </Routes>
   );
 }

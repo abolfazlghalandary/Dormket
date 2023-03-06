@@ -185,7 +185,6 @@ class SaleView(APIView):
 from django.db.models import Count
 
 
-# todo code should be uniqe
 class ForgottenCodeForSaleView(APIView):
     def get(self, request):
         prices = ForgottenCodeForSale.objects.values('price') \
@@ -198,7 +197,7 @@ class ForgottenCodeForSaleView(APIView):
         user_id = request.user.id
         code = request.data['code']
         price = request.data['price']
-        created_time = timezone.now()  # datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+        created_time = timezone.now()
 
         try:
             dormket_user = DormketUser.objects.get(user_id=user_id)
@@ -209,10 +208,11 @@ class ForgottenCodeForSaleView(APIView):
 
         if matched_purchase_codes.count() == 0:
             try:
-                ForgottenCodeForSale(dormketUser=dormket_user,
+                f = ForgottenCodeForSale(dormketUser=dormket_user,
                                      code=code,
                                      price=price,
-                                     createdTime=created_time).save()
+                                     createdTime=created_time)
+                f.save()
                 return Response('order successfully registered', status.HTTP_200_OK)
             except Exception as e:
                 return Response(e.__str__(), status=status.HTTP_400_BAD_REQUEST)
@@ -302,21 +302,21 @@ class ForgottenCodeForPurchaseView(APIView):
                 return Response(e.__str__(), status=status.HTTP_400_BAD_REQUEST)
 
 
-class ForgottenCodeController:
-    def post(self, request):
-        if not check_token(request):
-            return Response('invalid token', status=status.HTTP_401_UNAUTHORIZED)
-        user_id = request.user.id
-        price = request.data['price']
-        created_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
-
-        try:
-            dormket_user = DormketUser.objects.get(user_id=user_id)
-        except Exception as e:
-            return Response(e.__str__(), status=status.HTTP_400_BAD_REQUEST)
-
-        ForgottenCodeForPurchase(dormketUser=dormket_user, price=price, createdTime=created_time).save()
-        return Response('success', status.HTTP_200_OK)
+# class ForgottenCodeController:
+#     def post(self, request):
+#         if not check_token(request):
+#             return Response('invalid token', status=status.HTTP_401_UNAUTHORIZED)
+#         user_id = request.user.id
+#         price = request.data['price']
+#         created_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+#
+#         try:
+#             dormket_user = DormketUser.objects.get(user_id=user_id)
+#         except Exception as e:
+#             return Response(e.__str__(), status=status.HTTP_400_BAD_REQUEST)
+#
+#         ForgottenCodeForPurchase(dormketUser=dormket_user, price=price, createdTime=created_time).save()
+#         return Response('success', status.HTTP_200_OK)
 
 
 class Register(APIView):
@@ -347,7 +347,7 @@ class Login(APIView):
 
 
 class Logout(APIView):
-    def get(self, request):
+    def post(self, request):
         logout(request)
         return Response('success', status=status.HTTP_200_OK)
 

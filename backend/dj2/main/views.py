@@ -186,8 +186,17 @@ class ForgottenCodeView(APIView):
     def put(self, request):
         return self.entityView.put(request)
 
-#todo code should be uniqe
+
+from django.db.models import Count
+
+
+# todo code should be uniqe
 class ForgottenCodeForSaleView(APIView):
+    def get(self, request):
+        prices = ForgottenCodeForSale.objects.values('price')\
+                     .annotate(total_count=Count('id')).order_by('price')[:5]
+        return Response(prices, status.HTTP_200_OK)
+
     def post(self, request):
         # if not check_token(request):
         #     return Response('invalid token', status=status.HTTP_401_UNAUTHORIZED)
@@ -239,6 +248,11 @@ class ForgottenCodeForSaleView(APIView):
 
 
 class ForgottenCodeForPurchaseView(APIView):
+    def get(self, request):
+        prices = ForgottenCodeForPurchase.objects.values('price')\
+                     .annotate(total_count=Count('id')).order_by('price')[:5]
+        return Response(prices, status.HTTP_200_OK)
+
     def post(self, request):
         # if not check_token(request):
         #     return Response('invalid token', status=status.HTTP_401_UNAUTHORIZED)

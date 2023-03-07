@@ -2,10 +2,8 @@ import React, { useState } from "react";
 import { Grid, Button, TextField, FormControl } from "@mui/material";
 import './index.css';
 import { ReactComponent as ProductIcon } from './assets/trade/Product.svg';
-import fetch from 'node-fetch';
 
 function reqLogin(formData: FormData) {
-    const response = fetch('https://localhost:8000/main/login', { method: 'POST', body: formData });
     // //     const data = await response.json();
     //     console.log("data");
 }

@@ -31,7 +31,13 @@ function Profile() {
                     />
                 </Box>
             </Box>
-            <Income />
+            <Box
+                sx={{ m: 10 }}>
+                <Typography color="#000000" variant="h6" align="center">
+                    درآمد روزانه
+                </Typography>
+                <Income />
+            </Box>
         </>
     );
 }

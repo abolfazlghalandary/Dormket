@@ -8,9 +8,11 @@ import {
 } from '@devexpress/dx-react-chart-material-ui';
 
 const data = [
-  { argument: 1, value: 10 },
-  { argument: 2, value: 20 },
-  { argument: 3, value: 30 },
+  { argument: "1401/12/15", value: 10000 },
+  { argument: "1401/12/16", value: 80000 },
+  { argument: "1401/12/17", value: 50000 },
+  { argument: "1401/12/18", value: 40000 },
+  { argument: "1401/12/19", value: 35000 },
 ];
 
 function Income() {

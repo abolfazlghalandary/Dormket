@@ -44,8 +44,8 @@ function Home() {
                 display="flex"
                 justifyContent="center"
                 alignItems="center">
-                <Button variant="contained" sx={{ padding: "1rem", color: "#FFFFFF" }}>شروع خرید و فروش</Button>
-                <Button variant="outlined" sx={{ padding: "1rem", m: 2 }}>ثبت نام</Button>
+                <Button variant="contained" sx={{ padding: "1rem", color: "#FFFFFF" }} href="/trade">شروع خرید و فروش</Button>
+                <Button variant="outlined" sx={{ padding: "1rem", m: 2 }} href="/register">ثبت نام</Button>
             </Box>
 
             <Box

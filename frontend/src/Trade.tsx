@@ -45,7 +45,7 @@ function Trade() {
                 <Product title="پنیر روزانه" price="33000" type="food" />
                 <Grid item sx={{ alignItems: "center" }}>
                     <Paper
-                        sx={{ padding: "1rem", width: "20vw", height: "15vw", m: 4, borderRadius: 10, minWidth: "15rem", minHeight: "15rem", display: "grid" }}>
+                        sx={{ padding: "1rem", backgroundColor: "#E6F7FF", width: "20vw", height: "15vw", m: 4, borderRadius: 10, minWidth: "15rem", minHeight: "15rem", display: "grid" }}>
                         <Typography color="#000000" variant="h5" align="center">
                             کالای جدید
                         </Typography>
@@ -73,7 +73,7 @@ function Trade() {
                 <Product title="پنیر روزانه" price="33000" type="food" />
                 <Grid item sx={{ alignItems: "center" }}>
                     <Paper
-                        sx={{ padding: "1rem", width: "20vw", height: "15vw", m: 4, borderRadius: 10, minWidth: "15rem", minHeight: "15rem", display: "grid" }}>
+                        sx={{ padding: "1rem", backgroundColor: "#E6F7FF", width: "20vw", height: "15vw", m: 4, borderRadius: 10, minWidth: "15rem", minHeight: "15rem", display: "grid" }}>
                         <Typography color="#000000" variant="h5" align="center">
                             درخواست جدید
                         </Typography>

@@ -12,3 +12,13 @@ body {
 * {
   font-family: Vazir;
 }
+
+.big-view {
+  display:none;
+}
+
+@media only screen and (min-width: 768px) {
+  .big-view  {
+    display:block;
+  }
+}

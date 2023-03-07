@@ -37,7 +37,7 @@ function Home() {
                         </Row>
                     </Col>
                 </Box>
-                <Bed style={{ width: "80em" }} />
+                <Bed className='big-view' style={{ width: "80em" }} />
             </Box>
 
             <Box

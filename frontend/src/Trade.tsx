@@ -3,7 +3,6 @@ import { Box, Paper, Button, Grid } from "@mui/material";
 import { ReactComponent as ForgottenCode } from './assets/trade/ForgottenCode.svg';
 import { ReactComponent as Sells } from './assets/trade/Sells.svg';
 import { ReactComponent as Requests } from './assets/trade/Requests.svg';
-import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
 import './index.css';
 import OrderBook from './OrderBook';
 import Product from './Product';
@@ -34,12 +33,12 @@ function Trade() {
                 spacing={0}
                 alignItems="center"
                 justifyContent="center">
-                <Product title="پنیر روزانه" price="33000" type="food"/>
-                <Product title="پنیر روزانه" price="33000" type="food"/>
-                <Product title="پنیر روزانه" price="33000" type="food"/>
-                <Product title="پنیر روزانه" price="33000" type="food"/>
-                <Product title="پنیر روزانه" price="33000" type="food"/>
-                <Product title="پنیر روزانه" price="33000" type="food"/>
+                <Product title="پنیر روزانه" price="33000" type="food" />
+                <Product title="پنیر روزانه" price="33000" type="food" />
+                <Product title="پنیر روزانه" price="33000" type="food" />
+                <Product title="پنیر روزانه" price="33000" type="food" />
+                <Product title="پنیر روزانه" price="33000" type="food" />
+                <Product title="پنیر روزانه" price="33000" type="food" />
             </Grid >
             <Box
                 display="flex"

@@ -326,6 +326,10 @@ class Register(APIView):
 
         sid = transaction.savepoint()
         try:
+            username = request.data['username']
+            if User.objects.filter(username=username).count() != 0:
+                return Response('duplicated username', status=status.HTTP_400_BAD_REQUEST)
+
             user = User.objects.create_user(request.data['username'], request.data['email'], request.data['password1'])
             user.save()
             DormketUser(user=user, credit=10).save()
